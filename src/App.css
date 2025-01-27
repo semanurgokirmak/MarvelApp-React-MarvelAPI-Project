@@ -1,0 +1,7 @@
+body {
+  background: url('./images/bg.jpg') no-repeat;
+  background-size: 100% 100%; 
+  background-attachment: fixed;
+  height: 100%;  
+  font-family: 'Rowdies', sans-serif;
+}

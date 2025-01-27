@@ -1,0 +1,103 @@
+import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { search } from "../api/api";
+import Card from "../components/Card";
+
+const transition = { duration: 0.6, ease: [0.43, 0.13, 0.23, 0.96] };
+
+const Feed = () => {
+  const [data, setData] = useState([]);
+  const [value, setValue] = useState("");
+
+  const searchHeros = (name) => {
+    search(name)
+      .then((response) => {
+        setData(response.data.results);
+        console.log(response.data.results);
+      })
+      .catch((err) => console.log(err));
+  };
+  const handleChange = (e) => {
+    setValue(e.target.value);
+  };
+  const handleClick = (e) => {
+    searchHeros(value);
+  };
+  return (
+    <>
+      <div className=" mt-5 w-3/4 mx-auto">
+        <span className="absolute mt-3.5 -ml-4 lg:ml-2 items-center pl-3">
+          <svg
+            className="w-5 h-5 text-gray-900"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            ></path>
+          </svg>
+        </span>
+
+        <div className="mt-5 w-3/4 mx-auto">
+          <input
+            type="text"
+            value={value}
+            className="w-full text-black py-3 -ml-6 lg:-ml-0 pl-11 lg:pl-14 z-0 border font-bold rounded-full border-black focus:border-black focus:outline-none focus:ring placeholder-black bg-green-900"
+            placeholder="Search "
+            onChange={handleChange}
+          />
+
+          <button
+            className="absolute p-3 ml-2 rounded-xl  bg-red-900  focus:outline-none"
+            onClick={handleClick}
+          >
+            <svg className="w-5 h-6 text-black" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      {data.length > 0 ? (
+        <div className="m-10 w-full  ml-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 pr-9 ">
+          {data.map((hero) => (
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              transition={transition}
+              exit={{ opacity: 0 }}
+            >
+              <Link
+                to={{
+                  pathname: `/feed/${hero.name}/${hero.id}`,
+                  state: hero,
+                }}
+              >
+                <Card
+                  thumbnail={hero.thumbnail}
+                  name={hero.name}
+                  description={hero.description}
+                />
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        <h1 className="text-red-800 text-center font-lora font-bold text-4xl mt-3 p-2 ">
+          PLEASE SEARH A CHARACTER
+        </h1>
+      )}
+    </>
+  );
+};
+
+export default Feed;
